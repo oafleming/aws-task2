@@ -1,15 +1,7 @@
-  name     = var.cluster_name
-  role_arn = "arn:aws:iam::123456789012:role/eksClusterRole" # Replace with your IAM role ARN
-
-  vpc_config {
-    subnet_ids = ["subnet-xxxxxx"] # Replace with your subnet IDs
-  }
-}
-
-# Skeleton only: networking, node groups, IAM roles, etc. will be added in later steps.
+  # Skeleton only: networking, node groups, IAM roles, etc. will be added in later steps.
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
-  role_arn = "arn:aws:iam::123456789012:role/eksClusterRole" # Replace with your IAM role ARN
+  role_arn = "arn:aws:iam::536697248519:role/AWStask2KubeRole" # Replace with your IAM role ARN
 
   vpc_config {
     subnet_ids = module.vpc.public_subnets
