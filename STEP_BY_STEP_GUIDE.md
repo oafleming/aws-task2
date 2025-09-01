@@ -88,11 +88,82 @@ After your EKS cluster and node group are created, configure `kubectl` to access
 kubectl apply -f <manifest>.yaml
 ```
 
-## 7. Accessing Your Apps
+## 7. Create and Dockerize Three Next.js Apps
+
+### a. Scaffold App Structure
+- Create an `apps/` folder in your project root.
+- Inside `apps/`, create three subfolders: `app1/`, `app2/`, `app3/`.
+
+### b. Initialize Next.js TypeScript Apps
+- In each subfolder, run:
+  ```bash
+  npx create-next-app@latest --typescript
+  ```
+- Follow prompts for linter, Tailwind CSS, src directory, App Router, Turbopack, and import alias as desired.
+
+### c. Customize Home Pages
+- Edit `src/app/page.tsx` in each app to:
+  - Set a unique background color.
+  - Display a unique label (e.g., "Hello World from App 1").
+
+### d. Add Dockerfiles
+- Add a `Dockerfile` to each app folder with the following content:
+  ```Dockerfile
+  FROM node:20-alpine AS builder
+  WORKDIR /app
+  COPY . .
+  RUN npm install --frozen-lockfile
+  RUN npm run build
+
+  FROM node:20-alpine AS runner
+  WORKDIR /app
+  COPY --from=builder /app .
+  EXPOSE 3000
+  CMD ["npm", "start"]
+  ```
+
+### e. Version Control
+- Add, commit, and push all changes:
+  ```bash
+  git add .
+  git commit -m "Initialized three Next.js TypeScript apps and added Dockerfiles"
+  git push
+  ```
+
+## 8. Build, Test, and Push Docker Images
+
+### a. Build Docker Images
+- For each app, run:
+  ```bash
+  docker build --no-cache -t oafleming/app1:latest ./apps/app1
+  docker build --no-cache -t oafleming/app2:latest ./apps/app2
+  docker build --no-cache -t oafleming/app3:latest ./apps/app3
+  ```
+
+### b. Test Locally
+- Run each app locally to verify the custom Hello World screens:
+  ```bash
+  docker run -p 3000:3000 oafleming/app1:latest
+  docker run -p 3001:3000 oafleming/app2:latest
+  docker run -p 3002:3000 oafleming/app3:latest
+  ```
+- Visit `http://localhost:3000`, `http://localhost:3001`, and `http://localhost:3002` in your browser.
+
+### c. Push to Docker Hub
+- After verifying, push each image:
+  ```bash
+  docker push oafleming/app1:latest
+  docker push oafleming/app2:latest
+  docker push oafleming/app3:latest
+  ```
+
+All images are now available on Docker Hub for Kubernetes deployment.
+
+## 9. Accessing Your Apps
 - Get external ELB endpoints from `kubectl get svc`.
 - Test each app in your browser.
 
-## 8. Version Control
+## 10. Version Control
 - Commit changes after each major step:
 ```bash
 git add .
@@ -100,12 +171,12 @@ git commit -m "Describe your change"
 git push
 ```
 
-## 9. Troubleshooting & Best Practices
+## 11. Troubleshooting & Best Practices
 - Check AWS Console for resource status.
 - Use `kubectl get pods` and `kubectl logs` for debugging.
 - Follow Kubernetes best practices: probes, resource limits, RBAC.
 
-## 10. References
+## 12. References
 - [AWS EKS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html)
 - [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
