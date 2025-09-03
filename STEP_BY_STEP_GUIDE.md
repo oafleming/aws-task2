@@ -159,9 +159,32 @@ kubectl apply -f <manifest>.yaml
 
 All images are now available on Docker Hub for Kubernetes deployment.
 
-## 9. Accessing Your Apps
-- Get external ELB endpoints from `kubectl get svc`.
-- Test each app in your browser.
+## 9. Deploy Apps to EKS and Access Them
+
+### a. Apply Kubernetes Manifests
+- Deploy all three apps:
+  ```bash
+  kubectl apply -f apps/app1-deployment.yaml
+  kubectl apply -f apps/app2-deployment.yaml
+  kubectl apply -f apps/app3-deployment.yaml
+  ```
+
+### b. Verify Pods and Services
+- Check that all pods are running:
+  ```bash
+  kubectl get pods
+  ```
+- Check services and note the `EXTERNAL-IP` for each app:
+  ```bash
+  kubectl get svc
+  ```
+
+### c. Access Your Apps
+- Open a browser and visit the external endpoints for each app:
+  - App 1: `http://<app1 EXTERNAL-IP>`
+  - App 2: `http://<app2 EXTERNAL-IP>`
+  - App 3: `http://<app3 EXTERNAL-IP>`
+- You should see each app’s custom Hello World screen.
 
 ## 10. Version Control
 - Commit changes after each major step:
